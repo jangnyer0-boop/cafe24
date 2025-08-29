@@ -5204,7 +5204,7 @@ body .quick-menu {
 /* 4) 시각적으로 1~2px 위로 느껴지면 아래 보정값을 0~2px 사이로 조절 */
 #NaverChk_Button .npay_btn_link,
 #NaverChk_Button .npay_btn_pay{
-  background-position-y: calc(50% + 20px) !important; /* 필요 없으면 이 줄을 50%로 */
+  background-position-y: calc(50% + 50px) !important; /* 필요 없으면 이 줄을 50%로 */
 }
 
 /******************* 찜 삭제****************/
@@ -5274,26 +5274,15 @@ body .quick-menu {
   min-height: var(--npay-h) !important;
 }
 /*************new patch*******************/
-/* === [UNIFY PAY BUTTONS] NPay & Kakao – size & spacing hard override === */
 
-/* 0) 공통 토큰: 원하는 최종 높이/간격만 수정해서 쓰세요 */
-:root{
-  --pay-gap: 16px;   /* NPay ↔ Kakao 사이 간격 */
-  --npay-h: 56px;    /* 네이버 버튼 최종 높이 */
-  --kpay-h: 56px;    /* 카카오 버튼 최종 높이 */
-}
 
-/* 1) 간격: 장바구니/구매하기 아래 → NPay → Kakao 순서로 일정 간격 */
-#NaverChk_Button { margin: var(--pay-gap) 0 0 !important; }
-.app-pay-wrap + #appPaymentButtonBox { margin-top: var(--pay-gap) !important; }
-
-/* 2) NPay: 안내/타이틀/이벤트/찜 숨김 + 테이블을 1칸 풀폭으로 */
+/* NPay: 안내/이벤트/찜 숨김 + 1칸 풀폭 */
 #NaverChk_Button .npay_store_title,
 #NaverChk_Button .npay_text,
 #NaverChk_Button .npay_text_area,
 #NaverChk_Button .npay_sp_text,
-#NaverChk_Button .npay_event,
 #NaverChk_Button #NPAY_EVENT_ID,
+#NaverChk_Button .npay_event,
 #NaverChk_Button .npay_btn_zzim,
 #NaverChk_Button .npay_btn_item.btn_width { display:none !important; }
 #NaverChk_Button .npay_btn_list td:nth-child(2){ display:none !important; }
@@ -5307,21 +5296,23 @@ body .quick-menu {
 #NaverChk_Button .npay_btn_list{ table-layout:fixed !important; border-collapse:collapse !important; border-spacing:0 !important; }
 #NaverChk_Button .npay_btn_list td{ padding:0 !important; vertical-align:middle !important; }
 
-/* 3) NPay: 실제 버튼 높이/정렬 고정 (스프라이트 중앙 고정) */
+/* 접근성 텍스트 완전 숨김(밀림 원인 제거) */
+#NaverChk_Button .npay_blind{
+  position:absolute !important; width:1px!important; height:1px!important; margin:-1px!important; padding:0!important;
+  clip:rect(0,0,0,0)!important; clip-path: inset(50%) !important; overflow:hidden!important; white-space:nowrap!important; border:0!important;
+}
+
+/* NPay 버튼: 높이/중앙정렬 고정 */
 #NaverChk_Button .npay_btn_link,
 #NaverChk_Button .npay_btn_pay{
   display:flex !important; align-items:center !important; justify-content:center !important;
-  width:100% !important; height:var(--npay-h) !important; min-height:var(--npay-h) !important;
-  padding:0 16px !important; line-height:1 !important; box-sizing:border-box !important; border-radius:6px !important;
-  background-position:50% 50% !important;               /* ← 위아래 보정 줄 제거 (중요) */
-  background-size:auto !important;
-}
-/* 접근성 텍스트가 보이는 경우(브랜드 CSS 미로딩 대비) */
-#NaverChk_Button .npay_blind{
-  position:absolute !important; width:1px!important; height:1px!important; margin:-1px!important; clip:rect(0,0,0,0)!important; overflow:hidden!important;
+  width:100% !important; height:var(--pay-h) !important; min-height:var(--pay-h) !important;
+  padding:0 16px !important; line-height:1 !important; border-radius:6px !important;
+  background-position:50% 50% !important;
+      
 }
 
-/* 4) Kakao: 부가 요소 숨김 + 버튼 높이/정렬 고정 */
+/* Kakao: 부가요소 숨김 + 높이/중앙정렬 고정 */
 #appPaymentButtonBox #checkoutContainer .__checkout_buy_title,
 #appPaymentButtonBox #checkoutContainer .__checkout_buy_notice,
 #appPaymentButtonBox #checkoutContainer .__checkout_wrap_btn_channel,
@@ -5329,24 +5320,134 @@ body .quick-menu {
 #appPaymentButtonBox,
 #appPaymentButtonBox #kakao-checkout-button,
 #appPaymentButtonBox #checkoutContainer,
-#appPaymentButtonBox #checkoutContainer .__checkout_buy_contents{ width:100% !important; max-width:none !important; margin:0 !important; padding:0 !important; display:block !important; }
+#appPaymentButtonBox #checkoutContainer .__checkout_buy_contents{
+  width:100% !important; max-width:none !important; margin:0 !important; padding:0 !important; display:block !important;
+}
 #appPaymentButtonBox #checkoutContainer .__checkout_btn_comm.__checkout_btn_buy{
   display:flex !important; align-items:center !important; justify-content:center !important;
-  width:100% !important; height:var(--kpay-h) !important; min-height:var(--kpay-h) !important;
+  width:100% !important; height:var(--pay-h) !important; min-height:var(--pay-h) !important;
   padding:0 16px !important; line-height:1 !important; border-radius:6px !important;
   background:#FEE500 !important; border:1px solid #FEE500 !important; color:#191919 !important; font-weight:700 !important; font-size:16px !important;
 }
+/* --- NPay x Kakao: 최소 패치 (gap & wrappers) --- */
+/* === NPay 안전 패치: 랩퍼 유지 + 불필요 영역 제거 + 45px 정렬 === */
 
-/* 5) 모서리/그림자/outline로 생기는 위 검은 라인 제거 */
-#appPaymentButtonBox,
-#appPaymentButtonBox #checkoutContainer,
-#appPaymentButtonBox #checkoutContainer .__checkout_buy_container,
-#appPaymentButtonBox #checkoutContainer .__checkout_buy_contents{
-  border:0 !important; box-shadow:none !important; overflow:visible !important;
+/* 0) 랩퍼/버튼박스는 보존(사라졌던 원인 방지) + 높이 자동화 */
+#NaverChk_Button [id^="NC_ID_"].npay_storebtn_bx,
+#NaverChk_Button [id^="NPAY_BUTTON_BOX"]{
+  display:block !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
 }
-#appPaymentButtonBox::before,
-#appPaymentButtonBox::after,
-#appPaymentButtonBox #checkoutContainer::before,
-#appPaymentButtonBox #checkoutContainer::after,
-#appPaymentButtonBox #checkoutContainer .__checkout_buy_container::before,
-#appPaymentButtonBox #checkoutContainer .__checkout_buy_container::after{ content:none !important; }
+
+/* 1) 상단 안내(.npay_text)와 하단 이벤트(#NPAY_EVENT_ID/.npay_event) 레이아웃에서 완전 제거 */
+#NaverChk_Button .npay_text,
+#NaverChk_Button #NPAY_EVENT_ID,
+#NaverChk_Button .npay_event{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  clip-path: inset(50%) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
+/* 2) NPay 버튼 테이블 여백 제거 + 두 번째 셀(찜) 제거 */
+#NaverChk_Button .npay_btn_list{ border-collapse:collapse !important; border-spacing:0 !important; }
+#NaverChk_Button .npay_btn_list td{ padding:0 !important; }
+#NaverChk_Button .npay_btn_list td:nth-child(2){ display:none !important; }
+
+/* 3) 실제 녹색 버튼만 45px 고정 + 중앙 정렬 (배경 중앙 고정) */
+#NaverChk_Button .npay_btn_link,
+#NaverChk_Button .npay_btn_pay{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  height:45px !important;
+  min-height:45px !important;
+  line-height:1 !important;
+  background-position:50% 50% !important; /* 예전 calc(...) 무효화 */
+}
+
+/* 4) 네이버 ↔ 카카오 간격 축소 */
+.app-pay-wrap + #appPaymentButtonBox{ margin-top:8px !important; }  /* 필요시 6px로 더 줄여도 OK */
+
+/**************************************************/
+/* === PAY GAP • LOCKED (Zoom-stable) ====================== */
+:root { --gap-npay-kakao: 8px; }   /* 원하는 값으로: 6/8/10px 등 */
+
+/* 래퍼가 gap으로 간격 만들지 못하게 */
+.app-pay-wrap { gap: 0 !important; row-gap: 0 !important; }
+
+/* 마진은 0으로 초기화 (겹침/반올림 방지) */
+#NaverChk_Button { margin-bottom: 0 !important; }
+#appPaymentButtonBox { margin-top: 0 !important; }
+
+/* 네이버 버튼 아래 ‘스페이서’ 삽입 → 간격을 픽셀로 고정 */
+#NaverChk_Button::after {
+  content: "";
+  display: block;
+  height: var(--gap-npay-kakao);   /* ← 간격은 여기서만 관리 */
+  background: #fff;                /* 배경색이 흰 페이지면 유지, 다르면 페이지 배경색으로 */
+}
+
+/* (안전) 네이버 안내/이벤트는 계속 접기 */
+#NaverChk_Button .npay_text,
+#NaverChk_Button #NPAY_EVENT_ID,
+#NaverChk_Button .npay_event { display:none !important; height:0 !important; margin:0 !important; padding:0 !important; }
+/* ========================================================= */
+/* Cart/Buy ↔ NPay 간격만 제어 */
+:root { --gap-cart-npay: 8px; }  /* 원하면 12/20 등으로 변경 */
+
+.app-pay-wrap.flex {
+  margin-top: var(--gap-cart-npay) !important;
+}
+/***********************************************************/
+/* === NPay label nudge + radius =================================== */
+
+/* NPay 구매 버튼(라벨 배경이 붙는 실제 앵커) - id 매칭 + 안전 fallback */
+#NPAY_BUTTON_BOX_ID a[id^="NPAY_BUY_LINK_"].npay_btn_link.npay_btn_pay,
+#NaverChk_Button .npay_btn_link.npay_btn_pay{
+  /* 라운드 2px */
+  border-radius: 2px !important;
+}
+
+/* Kakao 버튼도 라운드 2px로 통일 */
+#appPaymentButtonBox #checkoutContainer .__checkout_btn_comm.__checkout_btn_buy{
+  border-radius: 2px !important;
+}
+
+/****************************************************************/
+/* === NPay label tweak ONLY + Kakao guard ================== */
+/* 0) 미세 보정값(아래로 0~3px 권장) */
+:root { --npay-nudge: 13px; }
+
+/* 1) 네이버 '구매' 앵커(라벨 스프라이트가 붙는 곳)만 타깃팅 */
+#NaverChk_Button #NPAY_BUTTON_BOX_ID a[id^="NPAY_BUY_LINK_"].npay_btn_link.npay_btn_pay,
+#NaverChk_Button [id^="NPAY_BUTTON_BOX"] a[id^="NPAY_BUY_LINK_"].npay_btn_link.npay_btn_pay{
+  /* 라벨만 살짝 이동 */
+  background-origin: content-box !important;
+  background-position: center calc(50% + var(--npay-nudge)) !important;
+  background-repeat: no-repeat !important;
+
+  /* 높이는 고정, 내용만 살짝 내리기 */
+  height: 45px !important; min-height: 45px !important;
+  padding-top: var(--npay-nudge) !important;  /* 시각적 미세 하강 */
+  padding-bottom: 0 !important;
+  line-height: 1 !important;
+}
+
+/* 2) Kakao 버튼 보호(높이/패딩/배경기준 고정) */
+#appPaymentButtonBox #checkoutContainer .__checkout_btn_comm.__checkout_btn_buy{
+  height: 45px !important; min-height: 45px !important;
+  padding-top: 0 !important; padding-bottom: 0 !important;
+  background-origin: padding-box !important;  /* 외부 규칙 영향 차단 */
+}
+/* ========================================================== */
+/*모바일 수정만 하면 된다아아아앙*/
